@@ -1,90 +1,88 @@
 import state from "./state";
 
-var NORMAL_W = 200, CMD_W = 300, H = 36, BOTTOM_BAR = 32;
+var W = 200, H = 36, BOTTOM_BAR = 32;
 
-function normalX() { return Math.floor((ui.width - NORMAL_W) / 2); }
-function cmdX() { return Math.floor((ui.width - CMD_W) / 2); }
+function indicatorX() { return Math.floor((ui.width - W) / 2); }
 function indicatorY() { return ui.height - H - BOTTOM_BAR; }
 
 export function openIndicator() {
     if (state.indicatorWindow) return;
     state.enabled = true;
+    var prevMode = null;
     state.indicatorWindow = ui.openWindow({
         classification: "vim-indicator",
-        x: normalX(),
+        x: indicatorX(),
         y: indicatorY(),
-        width: NORMAL_W,
+        width: W,
         height: H,
-        title: "",
+        title: "-- NORMAL --",
         widgets: [
             {
                 type: "label",
-                name: "modeLabel",
-                x: 4,
-                y: 2,
-                width: NORMAL_W - 8,
-                height: 14,
-                text: "-- NORMAL --"
-            },
-            {
-                type: "label",
                 name: "colonLabel",
-                x: 4,
-                y: 20,
-                width: 12,
+                x: 2,
+                y: 18,
+                width: 8,
                 height: 14,
                 text: ":",
                 isVisible: false
             },
             {
-                type: "label",
+                type: "textbox",
                 name: "cmdInput",
-                x: 18,
-                y: 20,
-                width: CMD_W - 22,
-                height: 14,
+                x: 10,
+                y: 16,
+                width: W - 20,
+                height: 16,
                 text: "",
-                isVisible: false
+                maxLength: 256,
+                isVisible: false,
+                onChange: function (text) {
+                    state.paletteText = text;
+                }
             }
         ],
         onUpdate: function () {
             if (!state.enabled) return;
             var win = state.indicatorWindow;
             if (!win) return;
-            var modeLabel = win.findWidget("modeLabel");
             var colonLabel = win.findWidget("colonLabel");
             var cmdInput = win.findWidget("cmdInput");
 
             if (state.mode === "command") {
-                win.x = cmdX();
+                win.title = "-- COMMAND --";
+                win.x = indicatorX();
                 win.y = indicatorY();
-                win.width = CMD_W;
-                modeLabel.isVisible = false;
                 colonLabel.isVisible = true;
                 cmdInput.isVisible = true;
-                cmdInput.text = state.paletteText;
+                if (prevMode !== "command") {
+                    cmdInput.text = "";
+                    cmdInput.focus();
+                    prevMode = "command";
+                }
             } else {
-                win.x = normalX();
+                win.title = "-- NORMAL --";
+                win.x = indicatorX();
                 win.y = indicatorY();
-                win.width = NORMAL_W;
-                modeLabel.isVisible = true;
-                modeLabel.text = "-- NORMAL --";
                 colonLabel.isVisible = false;
                 cmdInput.isVisible = false;
+                prevMode = "normal";
             }
         },
         onClose: function () {
-            state.enabled = false;
+            var wasCommand = state.mode === "command";
             state.mode = "normal";
             state.paletteText = "";
             state.indicatorWindow = null;
-            context.setTimeout(function () {
-                if (state.captureWindow) {
-                    state.captureWindow.close();
-                }
-            }, 1);
+            if (wasCommand) {
+                // Escape (or X) closed the window while in command mode — reopen in normal mode.
+                context.setTimeout(openIndicator, 1);
+            } else {
+                state.enabled = false;
+                context.setTimeout(function () {
+                    if (state.captureWindow) state.captureWindow.close();
+                }, 1);
+            }
         }
     });
 }
-
-export function updateIndicator() {}

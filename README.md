@@ -4,9 +4,9 @@ Vim-style modal keybindings for OpenRCT2.
 
 ## How it works
 
-In normal mode, an off-screen window with a focused textbox captures all keypresses. This gives you count prefixes, multi-key sequences, etc.
+An off-screen window with a focused textbox captures all keypresses in normal mode. This gives you count prefixes, multi-key sequences, etc.
 
-In command mode, the same capture window handles typing. The indicator bar at the bottom shows the current command text.
+A small indicator window sits above the bottom toolbar. Its title shows the current mode (`-- NORMAL --` or `-- COMMAND --`). In command mode, a textbox appears in the indicator for typing commands.
 
 ## Normal mode
 

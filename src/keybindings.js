@@ -36,8 +36,9 @@ export function registerKeybindings() {
         bindings: ["ESCAPE"],
         callback: function () {
             if (!state.enabled) return;
-            if (state.mode === "command") {
-                closePalette();
+            if (state.mode !== "command") return;
+            if (state.indicatorWindow) {
+                state.indicatorWindow.close();
             }
         }
     });

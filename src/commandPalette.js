@@ -11,10 +11,8 @@ export function closePalette() {
     if (!state.enabled) return;
     state.mode = "normal";
     state.paletteText = "";
-    if (state.captureWindow) {
-        state.captureGuard = true;
-        state.captureWindow.findWidget("captureInput").text = "";
-        state.captureGuard = false;
+    if (state.indicatorWindow) {
+        state.indicatorWindow.findWidget("cmdInput").text = "";
     }
 }
 

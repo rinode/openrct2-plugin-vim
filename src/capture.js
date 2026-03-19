@@ -34,9 +34,7 @@ export function openCapture() {
         onUpdate: function () {
             if (!state.enabled) return;
             if (!state.captureWindow) return;
-            if (state.mode === "command") {
-                state.captureWindow.findWidget("captureInput").focus();
-            } else {
+            if (state.mode === "normal") {
                 focusTick++;
                 if (focusTick >= 3) {
                     focusTick = 0;
@@ -67,14 +65,8 @@ function clearBuffer() {
 }
 
 function processBuffer(text) {
-    if (state.mode === "command") {
-        if (text !== ":") {
-            state.paletteText = text;
-        }
-        return;
-    }
-
     if (!text) return;
+    if (state.mode !== "normal") return;
 
     var match = text.match(/^(\d*)(.+)$/);
     if (!match) return;
