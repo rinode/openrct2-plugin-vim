@@ -67,6 +67,7 @@ function clearBuffer() {
 function processBuffer(text) {
     if (!text) return;
     if (state.mode !== "normal") return;
+    if (/^\d+$/.test(text)) return;
 
     var match = text.match(/^(\d*)(.+)$/);
     if (!match) return;
