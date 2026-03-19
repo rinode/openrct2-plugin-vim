@@ -1,19 +1,21 @@
 import state from "./state";
 
 export function openPalette() {
+    if (!state.enabled) return;
     if (state.mode === "command") return;
     state.paletteText = "";
     state.mode = "command";
-    // onUpdate in indicator.js handles the rest
 }
 
 export function closePalette() {
+    if (!state.enabled) return;
     state.mode = "normal";
     state.paletteText = "";
-    if (state.indicatorWindow) {
-        state.indicatorWindow.findWidget("cmdInput").text = "";
+    if (state.captureWindow) {
+        state.captureGuard = true;
+        state.captureWindow.findWidget("captureInput").text = "";
+        state.captureGuard = false;
     }
-    // onUpdate in indicator.js handles the rest
 }
 
 export function executeCommand(raw) {

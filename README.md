@@ -1,12 +1,12 @@
 # openrct2-plugin-vim
 
-Adds Vim-style modal keybindings to OpenRCT2.
+Vim-style modal keybindings for OpenRCT2.
 
 ## How it works
 
-In **Normal mode**, an off-screen hidden window with a focused textbox captures all keypresses. This allows the full Vim motion language: count prefixes, multi-key sequences, and anything else that can be expressed as a character stream.
+In normal mode, an off-screen window with a focused textbox captures all keypresses. This gives you count prefixes, multi-key sequences, etc.
 
-In **Command mode**, the mode indicator bar stretches to full width and transforms into a `:` command input — no new window is spawned.
+In command mode, the same capture window handles typing. The indicator bar at the bottom shows the current command text.
 
 ## Normal mode
 
@@ -27,8 +27,8 @@ In **Command mode**, the mode indicator bar stretches to full width and transfor
 
 | Key | Action |
 |---|---|
-| `r` | Rotate viewport left |
-| `R` | Rotate viewport right |
+| `r` | Rotate left |
+| `R` | Rotate right |
 | `+` | Zoom in |
 | `-` | Zoom out |
 
@@ -36,11 +36,11 @@ In **Command mode**, the mode indicator bar stretches to full width and transfor
 
 | Key | Action |
 |---|---|
-| `:` | Enter Command mode |
+| `:` | Enter command mode |
 
 ## Command mode
 
-Press `:` to open the command palette. Type a command and press `ENTER` or click **Execute**. Press `ESCAPE` to cancel.
+Press `:` to open the command input. Type a command and press `ENTER`. Press `ESCAPE` to cancel.
 
 | Command | Action |
 |---|---|
@@ -51,15 +51,15 @@ Press `:` to open the command palette. Type a command and press `ENTER` or click
 | `:q` / `:qa` | Quit (opens save dialog) |
 | `:help` | Show command list in-game |
 
-Commands support a `!` suffix (e.g. `:q!`) for force variants.
+Add `!` to force (e.g. `:q!`).
 
 ## Installation
 
 1. Run `npm install`
-2. Confirm the OpenRCT2 path in `package.json` (default: `C:/Users/Marino/Documents/OpenRCT2`)
+2. Set the OpenRCT2 path in `package.json` (default: `C:/Users/Marino/Documents/OpenRCT2`)
 3. Run `npm run build`
 
-The plugin is copied automatically to your OpenRCT2 plugin directory on each build.
+The plugin copies itself to the OpenRCT2 plugin directory on each build.
 
 ## Development
 
@@ -68,16 +68,15 @@ npm run build        # build once
 npm run watch build  # rebuild on file change
 ```
 
-Source files are in `src/`. Hot-reloading works if `enable_hot_reloading = true` is set in OpenRCT2's `config.ini`.
+Source files are in `src/`. Hot-reloading works if `enable_hot_reloading = true` is set in `config.ini`.
 
-## Toggling the plugin
+## Toggling
 
-Close the mode indicator window (click its X button) to disable the plugin entirely. This also shuts down the off-screen capture window so normal keyboard behaviour is restored.
+Close the indicator window to turn the plugin off. All shortcuts stop working.
 
-To re-enable, open the **Map** (or top toolbar) menu → **Vim Keys**.
+To turn it back on, go to the top toolbar menu and click **Vim Keys**.
 
-## Known limitations
+## Known issues
 
-- The normal mode capture window aggressively holds keyboard focus, which will conflict with native game rename dialogs and similar text inputs while active.
-- The `SHIFT+;` shortcut for `:` is registered as a fallback in case the capture textbox does not intercept it first.
-- `:q!` / `:qa!` cannot bypass the native save dialog — the OpenRCT2 plugin API does not expose a force-quit without prompt.
+- The capture window holds keyboard focus at all times, which conflicts with native rename dialogs.
+- `:q!` / `:qa!` still shows the save dialog. The API does not support skipping it.

@@ -1,13 +1,14 @@
 import state from "./state";
-import { closeCapture } from "./capture";
 
-var NORMAL_W = 200, H = 36, BOTTOM_BAR = 32;
+var NORMAL_W = 200, CMD_W = 300, H = 36, BOTTOM_BAR = 32;
 
 function normalX() { return Math.floor((ui.width - NORMAL_W) / 2); }
+function cmdX() { return Math.floor((ui.width - CMD_W) / 2); }
 function indicatorY() { return ui.height - H - BOTTOM_BAR; }
 
 export function openIndicator() {
     if (state.indicatorWindow) return;
+    state.enabled = true;
     state.indicatorWindow = ui.openWindow({
         classification: "vim-indicator",
         x: normalX(),
@@ -36,21 +37,18 @@ export function openIndicator() {
                 isVisible: false
             },
             {
-                type: "textbox",
+                type: "label",
                 name: "cmdInput",
                 x: 18,
-                y: 18,
-                width: 100, // resized dynamically in onUpdate
-                height: 16,
+                y: 20,
+                width: CMD_W - 22,
+                height: 14,
                 text: "",
-                maxLength: 256,
-                isVisible: false,
-                onChange: function (text) {
-                    state.paletteText = text;
-                }
+                isVisible: false
             }
         ],
         onUpdate: function () {
+            if (!state.enabled) return;
             var win = state.indicatorWindow;
             if (!win) return;
             var modeLabel = win.findWidget("modeLabel");
@@ -58,14 +56,13 @@ export function openIndicator() {
             var cmdInput = win.findWidget("cmdInput");
 
             if (state.mode === "command") {
-                win.x = 0;
+                win.x = cmdX();
                 win.y = indicatorY();
-                win.width = ui.width;
+                win.width = CMD_W;
                 modeLabel.isVisible = false;
                 colonLabel.isVisible = true;
                 cmdInput.isVisible = true;
-                cmdInput.width = ui.width - 22;
-                cmdInput.focus();
+                cmdInput.text = state.paletteText;
             } else {
                 win.x = normalX();
                 win.y = indicatorY();
@@ -77,13 +74,17 @@ export function openIndicator() {
             }
         },
         onClose: function () {
-            state.indicatorWindow = null;
+            state.enabled = false;
             state.mode = "normal";
             state.paletteText = "";
-            closeCapture();
+            state.indicatorWindow = null;
+            context.setTimeout(function () {
+                if (state.captureWindow) {
+                    state.captureWindow.close();
+                }
+            }, 1);
         }
     });
 }
 
-// Kept for compatibility — onUpdate now handles all visual state
 export function updateIndicator() {}
