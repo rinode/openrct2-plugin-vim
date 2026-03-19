@@ -2,6 +2,8 @@
 
 Vim-style modal keybindings for OpenRCT2.
 
+![Vim modal](./preview.png)
+
 ## How it works
 
 An off-screen window with a focused textbox captures all keypresses in normal mode. This gives you count prefixes, multi-key sequences, etc.
