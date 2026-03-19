@@ -1,17 +1,24 @@
-// Expose the OpenRCT2 to Visual Studio Code's Intellisense
-/// <reference path="OPENRCT2PATH/bin/openrct2.d.ts" />
+/// <reference path="C:/Program Files/OpenRCT2/bin/openrct2.d.ts" />
 
-// Import a module from another file.
-import Message from "./module";
+import { openIndicator } from "./indicator";
+import { openCapture } from "./capture";
+import { registerKeybindings } from "./keybindings";
 
 function main() {
-    console.log(Message); // Display the imported "Hallo World" message from module.js.
+    openIndicator();
+    openCapture();
+    registerKeybindings();
+    ui.registerMenuItem("Vim Keys", function () {
+        openIndicator();
+        openCapture();
+    });
+    console.log("[openrct2-plugin-vim] loaded");
 }
 
 registerPlugin({
-    name: "MYPLUGINNAME",
-    version: "0.1",
-    licence: "MIT", // Make sure to set the license prior to release
+    name: "openrct2-plugin-vim",
+    version: "0.2.0",
+    licence: "MIT",
     authors: [""],
     type: "local",
     main: main

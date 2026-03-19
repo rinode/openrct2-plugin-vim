@@ -1,25 +1,83 @@
-# OpenRCT2 plugin boilerplate
-This boilerplate project (starting point to create OpenRCT2 plugins with) allows you to create a multi-file ES6 OpenRCT2 plugin and have it transpiled to a single ES5 file (Which OpenRCT2 supports).
+# openrct2-plugin-vim
+
+Adds Vim-style modal keybindings to OpenRCT2.
+
+## How it works
+
+In **Normal mode**, an off-screen hidden window with a focused textbox captures all keypresses. This allows the full Vim motion language: count prefixes, multi-key sequences, and anything else that can be expressed as a character stream.
+
+In **Command mode**, the mode indicator bar stretches to full width and transforms into a `:` command input — no new window is spawned.
+
+## Normal mode
+
+### Navigation
+
+| Key | Action |
+|---|---|
+| `h` | Scroll left |
+| `j` | Scroll down |
+| `k` | Scroll up |
+| `l` | Scroll right |
+| `[count]h/j/k/l` | Scroll N tiles (e.g. `5j` scrolls 5 tiles down) |
+| `gg` | Jump to map start (0, 0) |
+| `G` | Jump to map end |
+| `zz` | Jump to map centre |
+
+### Viewport
+
+| Key | Action |
+|---|---|
+| `r` | Rotate viewport left |
+| `R` | Rotate viewport right |
+| `+` | Zoom in |
+| `-` | Zoom out |
+
+### Mode switching
+
+| Key | Action |
+|---|---|
+| `:` | Enter Command mode |
+
+## Command mode
+
+Press `:` to open the command palette. Type a command and press `ENTER` or click **Execute**. Press `ESCAPE` to cancel.
+
+| Command | Action |
+|---|---|
+| `:pause` | Pause the game |
+| `:unpause` | Unpause the game |
+| `:goto <x> <y>` | Jump viewport to world coordinates |
+| `:wq` | Save and quit (opens save dialog) |
+| `:q` / `:qa` | Quit (opens save dialog) |
+| `:help` | Show command list in-game |
+
+Commands support a `!` suffix (e.g. `:q!`) for force variants.
 
 ## Installation
-- Click "use this template" to create a repo using this boilerplate.
-- Pull or download your project onto your computer.
-- Run `npm install` to install all the required packages (Download [Node.js](https://nodejs.org/) if npm is not recognized).
-- In the package.json and `src/index.js`, replace `MYPLUGINNAME` with the name of your plugin, and replace `OPENRCT2PATH` with the path to your OpenRCT2 directory.
 
-## Build
-You can build your project using the following commands:
-- `npm run build` Manually build the project
-- `npm run watch build` Automatically build everytime a source file is updated
-If the installation was done correctly the transpiled JS file can be found in both the `build` directory and in the `plugin` directory of OpenRCT2. 
-With hotreloading enabled and the watch command being used you no longer have to restart the game, and move files around manually.
+1. Run `npm install`
+2. Confirm the OpenRCT2 path in `package.json` (default: `C:/Users/Marino/Documents/OpenRCT2`)
+3. Run `npm run build`
+
+The plugin is copied automatically to your OpenRCT2 plugin directory on each build.
 
 ## Development
-You can create your project in the `src` directory. The `index.js` file is the root of your project, from there feel free to [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) other modules (files).
 
-## Helper Suggestions
-Check out OliUI if you plan on incorporating a custom window in your plugin. OliUI takes away the hassle that comes with having to position every single UI element manually and instead lets you focus on the functionality.
-OliUI is an ES6 module that is compatible with this boilerplate. Simple copy [**the OliUI module file**](https://github.com/oli414/OliUI/blob/master/build/OliUI.js) into your project's `src/` folder and import the module.
-```javascript
-import Oui from "./OliUI";
 ```
+npm run build        # build once
+npm run watch build  # rebuild on file change
+```
+
+Source files are in `src/`. Hot-reloading works if `enable_hot_reloading = true` is set in OpenRCT2's `config.ini`.
+
+## Toggling the plugin
+
+Close the mode indicator window (click its X button) to disable the plugin entirely. This also shuts down the off-screen capture window so normal keyboard behaviour is restored.
+
+To re-enable, open the **Map** (or top toolbar) menu → **Vim Keys**.
+
+## Known limitations
+
+- The normal mode capture window aggressively holds keyboard focus, which will conflict with native game rename dialogs and similar text inputs while active.
+- The `SHIFT+;` shortcut for `:` is registered as a fallback in case the capture textbox does not intercept it first.
+- `:q!` / `:qa!` cannot bypass the native save dialog — the OpenRCT2 plugin API does not expose a force-quit without prompt.
