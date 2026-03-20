@@ -58,14 +58,14 @@ Add `!` to force (e.g. `:q!`).
 ## Installation
 
 1. Run `npm install`
-2. Set environment variable: `OPENRCT2_PLUGIN_PATH` (e.g., `C:/Users/YourUsername/Documents/OpenRCT2/plugin/`)
+2. Copy `deploy.config.example.json` to `deploy.config.json` and set your plugin path
 3. Run `npm run build`
 
 ## Development
 
 ```
 npm run build        # build once
-npm run deploy       # copy to OpenRCT2 plugin directory (requires OPENRCT2_PLUGIN_PATH env var)
+npm run deploy       # copy to OpenRCT2 plugin directory (requires deploy.config.json)
 npm run watch build  # rebuild on file change
 ```
 
