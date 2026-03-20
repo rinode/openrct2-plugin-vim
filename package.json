@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rollup ./src/index.js --file ./build/openrct2-plugin-vim.js && babel ./build/openrct2-plugin-vim.js --out-file ./build/openrct2-plugin-vim.js && cpy ./build/openrct2-plugin-vim.js C:/Users/Marino/Documents/OpenRCT2/plugin/ --rename=openrct2-plugin-vim.js",
+    "build": "rollup ./src/index.js --file ./build/openrct2-plugin-vim.js && babel ./build/openrct2-plugin-vim.js --out-file ./build/openrct2-plugin-vim.js",
+    "deploy": "cpy ./build/openrct2-plugin-vim.js \"$OPENRCT2_PLUGIN_PATH\" --rename=openrct2-plugin-vim.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "npm-watch"
   },

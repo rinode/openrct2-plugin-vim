@@ -6,7 +6,6 @@ var STEP = 128;
 export function openCapture() {
     if (state.captureWindow) return;
     state.captureGuard = false;
-    var focusTick = 2;
     state.captureWindow = ui.openWindow({
         classification: "vim-capture",
         x: -500,
@@ -34,15 +33,7 @@ export function openCapture() {
         onUpdate: function () {
             if (!state.enabled) return;
             if (!state.captureWindow) return;
-            if (state.mode === "command") {
-                state.captureWindow.findWidget("captureInput").focus();
-            } else {
-                focusTick++;
-                if (focusTick >= 3) {
-                    focusTick = 0;
-                    state.captureWindow.findWidget("captureInput").focus();
-                }
-            }
+            state.captureWindow.findWidget("captureInput").focus();
         },
         onClose: function () {
             state.captureWindow = null;

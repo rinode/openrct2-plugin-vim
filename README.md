@@ -58,15 +58,14 @@ Add `!` to force (e.g. `:q!`).
 ## Installation
 
 1. Run `npm install`
-2. Set the OpenRCT2 path in `package.json` (default: `C:/Users/Marino/Documents/OpenRCT2`)
+2. Set environment variable: `OPENRCT2_PLUGIN_PATH` (e.g., `C:/Users/YourUsername/Documents/OpenRCT2/plugin/`)
 3. Run `npm run build`
-
-The plugin copies itself to the OpenRCT2 plugin directory on each build.
 
 ## Development
 
 ```
 npm run build        # build once
+npm run deploy       # copy to OpenRCT2 plugin directory (requires OPENRCT2_PLUGIN_PATH env var)
 npm run watch build  # rebuild on file change
 ```
 
