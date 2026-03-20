@@ -8,7 +8,6 @@ function indicatorY() { return ui.height - H - BOTTOM_BAR; }
 export function openIndicator() {
     if (state.indicatorWindow) return;
     state.enabled = true;
-    var prevMode = null;
     state.indicatorWindow = ui.openWindow({
         classification: "vim-indicator",
         x: indicatorX(),
@@ -20,26 +19,22 @@ export function openIndicator() {
             {
                 type: "label",
                 name: "colonLabel",
-                x: 2,
-                y: 18,
+                x: 4,
+                y: 20,
                 width: 8,
                 height: 14,
                 text: ":",
                 isVisible: false
             },
             {
-                type: "textbox",
-                name: "cmdInput",
-                x: 10,
-                y: 16,
+                type: "label",
+                name: "cmdDisplay",
+                x: 18,
+                y: 20,
                 width: W - 20,
-                height: 16,
+                height: 14,
                 text: "",
-                maxLength: 256,
-                isVisible: false,
-                onChange: function (text) {
-                    state.paletteText = text;
-                }
+                isVisible: false
             }
         ],
         onUpdate: function () {
@@ -47,27 +42,20 @@ export function openIndicator() {
             var win = state.indicatorWindow;
             if (!win) return;
             var colonLabel = win.findWidget("colonLabel");
-            var cmdInput = win.findWidget("cmdInput");
+            var cmdDisplay = win.findWidget("cmdDisplay");
 
             if (state.mode === "command") {
                 win.title = "-- COMMAND --";
-                win.x = indicatorX();
-                win.y = indicatorY();
                 colonLabel.isVisible = true;
-                cmdInput.isVisible = true;
-                if (prevMode !== "command") {
-                    cmdInput.text = "";
-                    cmdInput.focus();
-                    prevMode = "command";
-                }
+                cmdDisplay.isVisible = true;
+                cmdDisplay.text = state.paletteText;
             } else {
                 win.title = "-- NORMAL --";
-                win.x = indicatorX();
-                win.y = indicatorY();
                 colonLabel.isVisible = false;
-                cmdInput.isVisible = false;
-                prevMode = "normal";
+                cmdDisplay.isVisible = false;
             }
+            win.x = indicatorX();
+            win.y = indicatorY();
         },
         onClose: function () {
             var wasCommand = state.mode === "command";
@@ -75,7 +63,6 @@ export function openIndicator() {
             state.paletteText = "";
             state.indicatorWindow = null;
             if (wasCommand) {
-                // Escape (or X) closed the window while in command mode — reopen in normal mode.
                 context.setTimeout(openIndicator, 1);
             } else {
                 state.enabled = false;

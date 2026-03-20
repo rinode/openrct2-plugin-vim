@@ -34,7 +34,9 @@ export function openCapture() {
         onUpdate: function () {
             if (!state.enabled) return;
             if (!state.captureWindow) return;
-            if (state.mode === "normal") {
+            if (state.mode === "command") {
+                state.captureWindow.findWidget("captureInput").focus();
+            } else {
                 focusTick++;
                 if (focusTick >= 3) {
                     focusTick = 0;
@@ -65,8 +67,11 @@ function clearBuffer() {
 }
 
 function processBuffer(text) {
+    if (state.mode === "command") {
+        state.paletteText = text;
+        return;
+    }
     if (!text) return;
-    if (state.mode !== "normal") return;
     if (/^\d+$/.test(text)) return;
 
     var match = text.match(/^(\d*)(.+)$/);
@@ -76,13 +81,13 @@ function processBuffer(text) {
     var cmd = match[2];
 
     if (cmd === "h") {
-        scrollBy(-STEP * count, 0); clearBuffer();
+        scrollByScreen(1, 0, count); clearBuffer();
     } else if (cmd === "j") {
-        scrollBy(0, STEP * count); clearBuffer();
+        scrollByScreen(0, 1, count); clearBuffer();
     } else if (cmd === "k") {
-        scrollBy(0, -STEP * count); clearBuffer();
+        scrollByScreen(0, -1, count); clearBuffer();
     } else if (cmd === "l") {
-        scrollBy(STEP * count, 0); clearBuffer();
+        scrollByScreen(-1, 0, count); clearBuffer();
     } else if (cmd === "G") {
         jumpToEnd(); clearBuffer();
     } else if (cmd === "r") {
@@ -109,9 +114,21 @@ function processBuffer(text) {
     }
 }
 
+function scrollByScreen(sdx, sdy, count) {
+    var r = ui.mainViewport.rotation;
+    var dx, dy;
+    switch (r) {
+        case 1: dx = -sdy; dy =  sdx; break;
+        case 2: dx = -sdx; dy = -sdy; break;
+        case 3: dx =  sdy; dy = -sdx; break;
+        default: dx =  sdx; dy =  sdy; break;
+    }
+    scrollBy(dx * STEP * count, dy * STEP * count);
+}
+
 function scrollBy(dx, dy) {
     var p = ui.mainViewport.getCentrePosition();
-    ui.mainViewport.scrollTo({ x: p.x + dx, y: p.y + dy });
+    ui.mainViewport.scrollTo({ x: p.x + dx, y: p.y + dy, z: 0 });
 }
 
 function jumpToStart() {

@@ -37,9 +37,7 @@ export function registerKeybindings() {
         callback: function () {
             if (!state.enabled) return;
             if (state.mode !== "command") return;
-            if (state.indicatorWindow) {
-                state.indicatorWindow.close();
-            }
+            closePalette();
         }
     });
 }
