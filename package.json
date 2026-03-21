@@ -15,14 +15,12 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.9.5",
-    "babel-cli": "^6.26.0",
-    "babel-loader": "^8.1.0",
-    "babel-preset-env": "^1.7.0",
-    "cpy-cli": "^3.1.1",
-    "npm-watch": "^0.6.0",
-    "rollup": "^2.7.2"
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/cli": "^7.24.0",
+    "rollup": "^4.13.0",
+    "cpy-cli": "^5.0.0",
+    "npm-watch": "^0.13.0"
   },
   "dependencies": {}
 }
